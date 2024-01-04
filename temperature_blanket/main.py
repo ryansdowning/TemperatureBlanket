@@ -4,6 +4,7 @@ import re
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import argparse
 from io import StringIO
 
 import pandas as pd
@@ -41,9 +42,20 @@ def convert_to_minutes_since_midnight(time_str):
 
 
 if __name__ == "__main__":
-    date = datetime.date.today() - datetime.timedelta(1)
-    temperatures_url = f"https://www.timeanddate.com/weather/@4367175/historic?hd={date.strftime('%Y%m%d')}"
-    sunrise_url = f"https://www.timeanddate.com/sun/@z-us-20850?month={date.month}"
+    parser = argparse.ArgumentParser(description='Temperature Blanket CLI')
+    parser.add_argument('--date', type=str, default=(datetime.date.today() - datetime.timedelta(1)).strftime('%Y-%m-%d'),
+                        help='Date formatted as YYYY-MM-DD (default: yesterday)')
+    parser.add_argument('--temperatures_url', type=str, default="https://www.timeanddate.com/weather/@4367175",
+                        help='URL for temperatures data')
+    parser.add_argument('--sunrise_url', type=str, default="https://www.timeanddate.com/sun/@z-us-20850",
+                        help='URL for sunrise data')
+    parser.add_argument('--email', type=str, help='Email to send the calculated temperature to')
+    args = parser.parse_args()
+
+
+    date = datetime.datetime.strptime(args.date, '%Y-%m-%d').date()
+    temperatures_url = f"{args.temperatures_url}/historic?hd={date.strftime('%Y%m%d')}"
+    sunrise_url = f"{args.sunrise_url}?month={date.month}"
     driver = Driver(uc=True, incognito=True, headless=HEADLESS)
 
     try:
@@ -73,6 +85,7 @@ if __name__ == "__main__":
         avg_day_temp = round(day_temps.mean())
 
         print(f"{avg_day_temp=}")
-        send_email("your.email@example.com", f"{date.strftime('%B %-d')}:  {avg_day_temp}°F", "")
+        if (args.email):
+            send_email(args.email, f"{date.strftime('%B %-d')}:  {avg_day_temp}°F", "")
     finally:
         driver.quit()
