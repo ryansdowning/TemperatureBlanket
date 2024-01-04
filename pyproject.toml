@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "temperatureblanket"
+version = "0.1.0"
+description = ""
+authors = ["Ryan D <ryansdowning1@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+beautifulsoup4 = "^4.12.2"
+webdriver-manager = "^4.0.1"
+selenium = "^4.16.0"
+requests = "^2.31.0"
+seleniumbase = "^4.22.4"
+pandas = "^2.1.4"
+lxml = "^5.0.0"
+python-dotenv = "^1.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
