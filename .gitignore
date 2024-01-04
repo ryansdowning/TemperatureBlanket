@@ -1,3 +1,3 @@
 .env
 **/__pycache__/
-**/download_files/
+**/downloaded_files/
